@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+<title>MSF Geneva Form API</title>
+<link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet"
+	type="text/css" />
+<link href="css/msf_form.css" rel="stylesheet" type="text/css" />
+<link href="css/mobiscroll.datetime-2.4.1.min.css" rel="stylesheet"
+	type="text/css" />
+<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="js/formapplication.js" type="text/javascript"></script>
+<script src="js/jquery.mobile-1.2.0.min.js" type="text/javascript"></script>
+<script src="js/mobiscroll.datetime-2.4.1.min.js" type="text/javascript"></script>
+<script src="js/lodash.min.js" type="text/javascript"></script>
+<script src="js/backbone-min.js" type="text/javascript"></script>
+<script src="js/formviews.js" type="text/javascript"></script>
+<script src="js/uiviews.js" type="text/javascript"></script>
+</head>
+
+<body>
+	<!-- PAGE 1 -->
+	<div data-role="page" data-theme="c">
+		<div data-role="header" data-theme="b" data-tap-toggle="false">
+			<h1 id="h1_pageone">MSF Geneva Form API</h1>
+		</div>
+		<div data-role="content">
+			<div style="margin: 0px auto; text-align: center;">
+				<img src="img/msf_running_man.png" />
+				<h2>MSF Geneva</h2>
+				<h3>Mobile data collection form API document</h3>
+			</div>
+		</div>
+		<div data-role="footer"></div>
+	</div>
+
+	<!--  PAGE  2 -->
+	<div data-role="page" data-theme="c">
+		<div data-role="header" data-theme="b" data-tap-toggle="false">
+			<h1 id="h1_pageone">MSF Geneva Form API</h1>
+		</div>
+		<div data-role="content">
+			<h2>Form elements</h2>
+			<p>Form elements are shortcuts to generate a consistent user
+				interface with minimal coding.</p>
+			<p>
+				Form elements store their data with concepts, set by the
+				<code>concept </code>
+				attribute. This allows for the underlying software to store the data
+				in a way that can be interpreted easily later. When designing forms,
+				be sure to document what each concept means!
+			</p>
+
+			<p>Insert these widgets into a document that looks like this:</p>
+			<blockquote>
+				<code>
+					&lt;htmlform&gt;<br>&nbsp;&nbsp;&nbsp;&lt;page&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Widgets
+					for page 1 go here<br>&nbsp;&nbsp;&nbsp;&lt;/page&gt;<br>&nbsp;&nbsp;&nbsp;&lt;page&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Widgets
+					for page 2 go here<br>&nbsp;&nbsp;&nbsp;&lt;/page&gt;<br>&lt;/htmlform&gt;
+				</code>
+			</blockquote>
+			<p>The software will process this shorthand code into HTML like
+				this document, which can be displayed and used in any modern
+				browser.</p>
+
+			<!-- Text fields -->
+			<div data-role="collapsible" data-theme="c" data-content-theme="c">
+				<h2>Text fields</h2>
+				<p>Text fields can be used to collect either free text or text.</p>
+				<div data-role="collapsible-set">
+					<div data-role="collapsible" data-collapsed="false" data-theme="b"
+						data-content-theme="c">
+						<h2>Simple text field</h2>
+						<p>This simple example collects text and stores it with the
+							"firstName" concept</p>
+						<blockquote>
+							<code>&lt;textfield concept=&quot;firstName&quot;
+								label=&quot;First name:&quot;/&gt;</code>
+						</blockquote>
+						<div data-role="fieldcontain">
+							<label for="name">First name:</label> <input type="text"
+								name="name" id="name" value="" formview="text"
+								concept="firstName" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Number fields -->
+			<div data-role="collapsible" data-theme="c" data-content-theme="c">
+				<h2>Number fields</h2>
+				<p>Number fields display a numeric keypad on mobile devices and
+					prevent any non-integer entry.</p>
+				<div data-role="collapsible-set">
+					<div data-role="collapsible" data-collapsed="false" data-theme="b"
+						data-content-theme="c">
+						<h2>Simple number field</h2>
+						<p>This simple example collects text and stores it with the
+							"firstName" concept</p>
+						<blockquote>
+							<code>&lt;numberfield concept=&quot;numberOfChildren&quot;
+								label=&quot;How many children are in your household?&quot;/&gt;</code>
+						</blockquote>
+						<div data-role="fieldcontain">
+							<label for="numberofhamsters">How many children are in
+								your household?</label> <input type="number" name="numberOfChildren"
+								id="numberOfChildren" value="" formview="number"
+								concept="numberOfChildren" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- DATE -->
+			<div data-role="collapsible" data-theme="c" data-content-theme="c">
+				<h2>Date field</h2>
+				<p>Field to enter a date using a graphical interface.</p>
+				<div data-role="collapsible-set">
+					<div data-role="collapsible" data-collapsed="false" data-theme="b"
+						data-content-theme="c">
+						<h2>Simple date field</h2>
+						<p>Click the text field to display the date picker</p>
+						<code>&lt;datefield concept=&quot;birthDate&quot; /&gt;</code>
+						<div data-role="fieldcontain">
+							<label for="birthday">Birthday:</label> <input type="text"
+								name="birthday" id="birthday" value="" formview="date"
+								concept="birthday" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Checkboxes -->
+			<div data-role="collapsible" data-theme="c" data-content-theme="c">
+				<h2>Checkbox sets</h2>
+				<p>Checkboxsets group multiple checkboxes into a unified form
+					item. This is useful when a single question has several
+					possibilities that are not all mutually exclusive. Each checkbox is
+					associated with at most one concept.</p>
+				<p>
+					<code>&lt;checkbox&gt;</code>
+					attributes:
+				</p>
+				<ul style="list-style-type: disc;">
+					<li><strong><code>disableothers</code>:</strong> Selecting
+						(clicking) a checkbox with the <code>disableothers</code>
+						attribute set to "true" will disable all other checkboxes within
+						the <code>checkboxset</code>. Useful for "none" options where
+						there one answer is mutually exclusive to all others.</li>
+					<li><strong><code>showotherid</code>:</strong> The <code>showotherid</code>
+						attribute should be set to the id of another form element that to
+						be shown when this checkbox is selected. The element matching the
+						given ID will be hidden by default.</li>
+				</ul>
+				<div data-role="collapsible-set">
+					<div data-role="collapsible" data-collapsed="false" data-theme="b"
+						data-content-theme="c">
+						<h3>Simple checkbox set</h3>
+						<p>This is an example of a simple checkboxset and checkboxes
+							without logic. There are three concepts in this question each
+							associated with a true/false.</p>
+						<blockquote>
+							<pre>
+								<code>
+&lt;<strong>checkboxset</strong> label=&quot;What do you do for fun?&quot;&gt;
+	&lt;<strong>checkbox</strong> concept=&quot;interestSports&quot; label=&quot;Sports&quot;/&gt;
+	&lt;checkbox concept=&quot;interestComputers&quot; label=&quot;Computers&quot;/&gt;
+	&lt;checkbox concept=&quot;interestBirds&quot; label=&quot;Birdwatching&quot;/&gt;
+&lt;/checkboxset&gt;
+						</code>
+							</pre>
+						</blockquote>
+						<div data-role="fieldcontain">
+							<fieldset data-role="controlgroup" uiview="checkboxset">
+								<legend>What do you do for fun?</legend>
+								<input type="checkbox" name="checkbox-2" id="checkbox-2"
+									formview="checkbox" concept="interestSports" /> <label
+									for="checkbox-2">Sports</label> <input type="checkbox"
+									name="checkbox-3" id="checkbox-3" formview="checkbox"
+									concept="interestComputers" /> <label for="checkbox-3">Computers</label>
+								<input type="checkbox" name="checkbox-4" id="checkbox-4"
+									formview="checkbox" concept="interestBirds" /> <label
+									for="checkbox-4">Birdwatching</label>
+							</fieldset>
+						</div>
+					</div>
+					<div data-role="collapsible" data-theme="b" data-content-theme="c">
+						<h3>Checkbox set with logic</h3>
+						<p>
+							This is an example of the <strong>checkboxset</strong> and <strong>checkbox</strong>
+							elements using the disableothers and showotherid attributes.
+						</p>
+						<ul style="list-style-type: disc">
+							<li>Selecting "Nothing" will disable all other options in
+								this question and mark them as unchecked.</li>
+							<li>Selecting "Other..." will show a previously hidden field
+								to specify with free text."</li>
+						</ul>
+						<blockquote>
+							<pre>
+								<code>
+&lt;<strong>checkboxset</strong> label=&quot;What do you do for fun?&quot;&gt;
+	&lt;<strong>checkbox</strong> concept=&quot;interestSports&quot; label=&quot;Sports&quot;/&gt;
+	&lt;checkbox concept=&quot;interestComputers&quot; label=&quot;Computers&quot;/&gt;
+	&lt;checkbox concept=&quot;interestBirds&quot; label=&quot;Birdwatching&quot;/&gt;
+	&lt;checkbox concept=&quot;interestNothing&quot; label=&quot;Nothing&quot; <strong>disableothers=&quot;true&quot;</strong>/&gt;
+	&lt;checkbox concept=&quot;interestOther&quot; label=&quot;Other...&quot; <strong>showotherid=&quot;otherFunThing&quot;</strong>/&gt;
+&lt;/checkboxset&gt;
+
+&lt;textinput concept=&quot;otherFunThingConcept&quot; label=&quot;What else do you do for fun?&quot;/&gt;
+						</code>
+							</pre>
+						</blockquote>
+						<div data-role="fieldcontain">
+							<fieldset data-role="controlgroup" uiview="checkboxset">
+								<legend>What do you do for fun?</legend>
+								<input type="checkbox" name="checkbox-2" id="checkbox-2"
+									formview="checkbox" concept="interestSports" /> <label
+									for="checkbox-2">Sports</label> <input type="checkbox"
+									name="checkbox-3" id="checkbox-3" formview="checkbox"
+									concept="interestComputers" /> <label for="checkbox-3">Computers</label>
+								<input type="checkbox" name="checkbox-4" id="checkbox-4"
+									formview="checkbox" concept="interestBirds" /> <label
+									for="checkbox-4">Birdwatching</label> <input type="checkbox"
+									name="checkbox-5" id="checkbox-5" disableothers="true"
+									formview="checkbox" concept="interestNothing" /> <label
+									for="checkbox-5">Nothing</label> <input type="checkbox"
+									name="checkbox-6" id="checkbox-6" showotherid="otherFunThing"
+									formview="checkbox" concept="interestOther" /> <label
+									for="checkbox-6">Other...</label>
+							</fieldset>
+						</div>
+						<div data-role="fieldcontain">
+							<label for="name">What else do you do for fun?</label> <input
+								type="text" name="otherFunThing" id="otherFunThing" value=""
+								formview="text" concept="otherFunThingConcept" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- RADIO GROUP -->
+			<div data-role="collapsible" data-theme="c" data-content-theme="c">
+				<h2>Radio groups</h2>
+				<p>Radio groups allow for a single-choice selection from a list.</p>
+				<p>
+					<code> &lt;radiobutton&gt; </code>
+					attributes:
+				</p>
+				<ul style="list-style-type: disc">
+					<li><strong><code>showotherid</code>:</strong> The <code>showotherid</code>
+						attribute should be set to the id of another form element that to
+						be shown when this value is selected. The element matching the
+						given ID will be hidden by default.</li>
+				</ul>
+				<div data-role="collapsible-set">
+					<div data-role="collapsible" data-collapsed="false" data-theme="b"
+						data-content-theme="c">
+						<h3>Simple radio group</h3>
+						<p>Question to select a single value from a list</p>
+						<blockquote>
+							<pre>
+								<code>
+&lt;<strong>radiogroup</strong> label=&quot;Choose a pet:&quot; concept=&quot;petChoiceConcept&quot;&gt;
+	&lt;<strong>radiobutton</strong> value=&quot;cat&quot; label=&quot;Cat&quot;/&gt;
+	&lt;<strong>radiobutton</strong> value=&quot;dog&quot; label=&quot;Dog&quot;/&gt;
+	&lt;<strong>radiobutton</strong> value=&quot;hamster&quot; label=&quot;Hamster&quot;/&gt;
+	&lt;<strong>radiobutton</strong> value=&quot;lizard&quot; label=&quot;Lizard&quot;/&gt;
+&lt;/radiogroup&gt;
+						</code>
+							</pre>
+						</blockquote>
+						<div data-role="fieldcontain">
+							<fieldset data-role="controlgroup" id="petchoice"
+								formview="radiogroup" concept="petChoiceConcept">
+								<legend>Choose a pet:</legend>
+								<input type="radio" name="radio-choice-2" id="radio-choice-21"
+									value="cat" checked="checked" /> <label for="radio-choice-21">Cat</label>
+								<input type="radio" name="radio-choice-2" id="radio-choice-22"
+									value="dog" /> <label for="radio-choice-22">Dog</label> <input
+									type="radio" name="radio-choice-2" id="radio-choice-23"
+									value="hamster" /> <label for="radio-choice-23">Hamster</label>
+								<input type="radio" name="radio-choice-2" id="radio-choice-24"
+									value="lizard" /> <label for="radio-choice-24">Lizard</label>
+							</fieldset>
+						</div>
+					</div>
+					<div data-role="collapsible" data-theme="b" data-content-theme="c">
+						<h3>Radio group with logic</h3>
+						<p>Select a single value. Selecting "Hamster" will display
+							another question that was previously hidden.</p>
+						<blockquote>
+							<pre>
+								<code>
+&lt;<strong>radiogroup</strong> label=&quot;Choose a pet:&quot; concept=&quot;petChoiceConcept&quot;&gt;
+	&lt;<strong>radiobutton</strong> value=&quot;cat&quot; label=&quot;Cat&quot;/&gt;
+	&lt;radiobutton value=&quot;dog&quot; label=&quot;Dog&quot;/&gt;
+	&lt;radiobutton value=&quot;hamster&quot; label=&quot;Hamster&quot;
+		<strong>showotherid=&quot;numberofhamstersid&quot;</strong>/&gt;
+	&lt;radiobutton value=&quot;lizard&quot; label=&quot;Lizard&quot;/&gt;
+&lt;/radiogroup&gt;
+
+&lt;textfield concept=&quot;numberOfHamsters&quot;
+	label=&quot;Number of hamsters:&quot; /&gt;</code>
+							</pre>
+						</blockquote>
+						<div data-role="fieldcontain">
+							<fieldset data-role="controlgroup" id="petchoice"
+								formview="radiogroup" concept="petChoiceConcept">
+								<legend>Choose a pet:</legend>
+								<input type="radio" name="radio-choice-2" id="radio-choice-21"
+									value="cat" checked="checked" /> <label for="radio-choice-21">Cat</label>
+								<input type="radio" name="radio-choice-2" id="radio-choice-22"
+									value="dog" /> <label for="radio-choice-22">Dog</label> <input
+									type="radio" name="radio-choice-2" id="radio-choice-23"
+									value="hamster" showotherid="numberofhamstersid" /> <label
+									for="radio-choice-23">Hamster</label> <input type="radio"
+									name="radio-choice-2" id="radio-choice-24" value="lizard" /> <label
+									for="radio-choice-24">Lizard</label>
+							</fieldset>
+						</div>
+						<div data-role="fieldcontain">
+							<label for="numberofhamstersid">Number of hamsters:</label> <input
+								type="number" id="numberofhamstersid" value="" formview="number"
+								concept="numberOfHamsters" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div data-role="footer"></div>
+	</div>
+
+	<!-- SUBMIT PAGE -->
+	<div id="submitpage" data-role="page" data-theme="c">
+		<script>
+			$("#submitpage")
+					.on(
+							"pageshow",
+							function() {
+								FormApp.formItemModels.comparator = function(
+										model) {
+									return model.pageIdx;
+								};
+								FormApp.formItemModels.sort();
+
+								var submitText = JSON.stringify(
+										FormApp.formItemModels.toJSON(),
+										undefined, 2);
+								$("#submitText").text(submitText);
+								var resultList = $("#resultList");
+
+								resultList.html("");
+								var newEntry;
+								var currentPage = -1;
+								FormApp.formItemModels
+										.each(function(model) {
+											if (currentPage != model.pageIdx) {
+												currentPage = model.pageIdx;
+												$(
+														"<li data-role=\"list-divider\">Page "
+																+ currentPage
+																+ "</li>")
+														.appendTo(resultList);
+											}
+											newEntry = $("<li></li>");
+											newEntry.append($("<h3>"
+													+ model.get("concept")
+													+ "</h3>"));
+											var value = model.get("value");
+											if (value == undefined) {
+												value = "<span style='color : red;'>UNDEFINED!</span>";
+											}
+											newEntry
+													.append($("<p>Value:&nbsp;&nbsp;<strong>"
+															+ value
+															+ "</strong></p>"));
+											newEntry.appendTo(resultList);
+										});
+								resultList.listview('refresh');
+							});
+		</script>
+		<div data-role="header" data-theme="b" data-tap-toggle="false">
+			<h1 id="h1_pageone">Submit data</h1>
+		</div>
+		<div data-role="content">
+
+			<div style="margin: 0 auto; width: 70%;">
+				<ul id="resultList" data-role="listview" data-theme="b"
+					data-divider-theme="b" data-inset="true">
+				</ul>
+			</div>
+
+			<div class="ui-body ui-body-e"
+				style="margin: 0 auto; width: 90%; margin-top: 40px;">
+				<h2>Raw JSON text</h2>
+				<span id="submitText"></span>
+			</div>
+		</div>
+		<div data-role="footer"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+<title>MSF Form</title>
+<link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet"
+	type="text/css" />
+<link href="css/msf_form.css" rel="stylesheet" type="text/css" />
+<link href="css/mobiscroll.datetime-2.4.1.min.css" rel="stylesheet"
+	type="text/css" />
+<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="js/lodash.min.js" type="text/javascript"></script>
+<script src="js/backbone-min.js" type="text/javascript"></script>
+
+<script src="js/mvc/form_views.js" type="text/javascript"></script>
+<script src="js/mvc/form_controller.js" type="text/javascript"></script>
+<script src="js/mvc/form_model.js" type="text/javascript"></script>
+
+<script src="js/mvc/test_init.js" type="text/javascript"></script>
+
+<script src="js/jquery.mobile-1.2.0.min.js" type="text/javascript"></script>
+<script src="js/mobiscroll.datetime-2.4.1.min.js" type="text/javascript"></script>
+
+
+</head>
+
+<body>
+<script id='tmpl-page' type='text/template'>
+	<div data-role="header" data-theme="<%= data.headerTheme %>">
+		<h1><%= data.headerText %></h1>
+	</div>
+	<div data-role="content" data-theme="<%= data.contentTheme %>">
+	</div>
+	<div data-role="footer" data-theme="<%= data.footerTheme %>">
+	</div>
+</script>
+
+<script id='tmpl-footer' type='text/template'>
+<div data-role="navbar" data-iconpos="<%= data.footerIconPosition %>">
+	<ul>
+		<li><a action="<%= data.footerButton1Action %>" data-icon="<%= data.footerButton1Icon %>" data-theme="<%= data.footerButton1Theme %>">
+			<%= data.footerButton1Text %>
+		</a></li>
+		<li><a action="<%= data.footerButton2Action %>" data-icon="<%= data.footerButton2Icon %>" data-theme="<%= data.footerButton2Theme %>">
+			<%= data.footerButton2Text %>
+		</a></li>
+		<li><a action="<%= data.footerButton3Action %>" data-icon="<%= data.footerButton3Icon %>" data-theme="<%= data.footerButton3Theme %>">
+			<%= data.footerButton3Text %>
+		</a></li>
+	</ul>
+</div>
+</script>
+
+<script id='tmpl-textview' type='text/template'>
+<%
+var inputId = data.view.id + '_input';
+%>
+<div data-role="fieldcontain">
+	<label for="<%= inputId %>"><%= data.model.get('label') %></label>
+	<input type="text" id="<%= inputId %>" value="" />
+</div>
+</script>
+
+<script id='tmpl-numberview' type='text/template'>
+<%
+var inputId = data.view.id + '_input';
+%>
+<div data-role="fieldcontain">
+	<label for="<%= inputId %>"><%= data.model.get('label') %></label>
+	<input type="number" id="<%= inputId %>" value="" />
+</div>
+</script>
+
+<script id='tmpl-radioview' type='text/template'>
+<%
+var inputId = data.view.id + '-input';
+%>
+<div data-role="fieldcontain">
+	<fieldset data-role="controlgroup">
+		<legend><%= data.model.get('label') %></legend>
+		<% _.each(data.model.get('options'), function(option, index) {
+			var currentId = inputId + '-' + index; %>
+			<input type="radio" id="<%= currentId %>" name="<%= data.view.id %>" value="<%= option.value %>" />
+			<label for="<%= currentId %>"><%= option.label %></label>
+		<% }); %>
+	</fieldset>
+</div>
+</script>
+
+<script id='tmpl-checkview' type='text/template'>
+<%
+var inputId = data.view.id + '-input';
+%>
+<div data-role="fieldcontain">
+	<fieldset data-role="controlgroup">
+		<legend><%= data.model.get('label') %></legend>
+		<% _.each(data.model.get('options'), function(option, index) {
+			var currentId = inputId + '-' + index; %>
+			<input type="checkbox" id="<%= currentId %>" name="<%= data.view.id %>" value="<%= option.value %>" />
+			<label for="<%= currentId %>"><%= option.label %></label>
+		<% }); %>
+	</fieldset>
+</div>
+</script>
+
+<script id='tmpl-checkboxgroupview' type='text/template'>
+</script>
+
+<script id='tmpl-checkboxview' type='text/template'>
+</script>
+
+<script id='tmpl-dateview' type='text/template'>
+</script>
+</body>
+
+</html>

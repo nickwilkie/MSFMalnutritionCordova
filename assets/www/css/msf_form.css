@@ -1,0 +1,24 @@
+@CHARSET "UTF-8";
+
+[role='heading'] .error, label .error {
+	color: red;
+}
+
+li.errordescription {
+	color: red;
+	list-style-type: disc;
+}
+
+.fielderror {
+	background-color: #FFDDDD;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+ul.errorlist {
+}
+
+[data-role=page] {
+	height: 100% !important;
+	position:relative !important;
+}
