@@ -18,38 +18,34 @@ var FormItemViewModel = Backbone.Model.extend({
 	},
 	
 	initialize : function() {
-		var obs = FormApp.obs.findObsFromConceptId(this.get('conceptId'));
-		if (!obs) {
-			obs = FormApp.obs.add({conceptId : this.get('conceptId'), value : this.get('defaultValue')});
-			obs = FormApp.obs.findObsFromConceptId(this.get('conceptId'));
-		}
-		this.obs = obs;
+//		var obs = FormApp.obs.findObsFromConceptId(this.get('conceptId'));
+//		if (!obs) {
+//			obs = FormApp.obs.add({conceptId : this.get('conceptId'), value : this.get('defaultValue')});
+//			obs = FormApp.obs.findObsFromConceptId(this.get('conceptId'));
+//		}
+//		this.obs = obs;
 		
-		this.listenTo(this.obs, 'change:value', this.obsChanged);
+//		this.listenTo(this.obs, 'change:value', this.obsChanged);
+		
+		var children = this.get('children');
+		if(children) {
+			this.childrenModels = new FormItemViewModelList;
+			this.childrenModels.add(children);
+			
+			this.listenTo(this.childrenModels, 'change', this.rebuildChildren);
+		}
 	},
 	
-	obsChanged : function(obs, value) {
-		this.view.setValue(value);
-	},
-	
-	viewValueChanged : function(view) {
-		this.obs.set( { value : view.getValue() });
-	},
-	
-	setObsValue : function(value) {
-		this.obs.set("value", value);
-	},
-	
-	getObsValue : function() {
-		return this.obs.getValue(this.get('conceptId'));
-	},
-	
-	generateView : function(element) {
+	generateView : function(element, viewType) {
 		if(this.view) {
 			this.destroyView();
 		}
-		this.view = new formItemViewCodes[this.get('viewType')]({model : this, el : element});
-		this.listenTo(this.view, 'viewValueChanged', this.viewValueChanged);
+		
+		if(!viewType) {
+			viewType = this.get('viewType');
+		}
+		
+		this.view = new formItemViewCodes[viewType]({model : this, el : element});
 		this.view.render();
 	},
 	
@@ -57,6 +53,10 @@ var FormItemViewModel = Backbone.Model.extend({
 		this.view.stopListening();
 		this.view.$el.html("");
 		this.view = undefined;
+	},
+	
+	rebuildChildren : function() {
+		this.set('children', childrenModels.toJSON());
 	}
 });
 
@@ -91,7 +91,6 @@ var FormItemView = Backbone.View.extend({
 	},
 	
 	valueChanged : function(view) {
-		this.model.viewValueChanged(view);
 	},
 	
 	render : function() {
@@ -106,7 +105,8 @@ var FormItemView = Backbone.View.extend({
 
 var TextView = FormItemView.extend({
 	events : {
-		"keyup input" : "valueChanged"
+		"keyup input" : "valueChanged",
+		"change input" : "valueChanged"
 	},
 	
 	customPropertyDescriptors : {
@@ -156,7 +156,6 @@ var RadioView = TextView.extend({
 	},
 	
 	radioValueChanged : function(e) {
-		this.viewValueChanged();
 	},
 	
 	getValue : function() {
@@ -182,19 +181,17 @@ var CheckGroupView = FormItemView.extend({
 	},
 	
 	render : function() {
-		this.children = [];
-		this.renderDefault("tmpl-checkgroupview", function($elBeforeCreate) {
-			var children = this.model.get('children');
-			
-			_.each(children, function(element, index, list) {
-				new CheckView
-			}, this);
-		});
+//		this.renderDefault("tmpl-checkgroupview", function($elBeforeCreate) {
+//			this.childrenModels.each(function(child, index, list) {
+//				var newElement = $("<input></input>").appendTo(this.$el);
+//				var newCheckBox = child.generateView(newElement);
+//			}, this);
+//		});
 		
+		this.renderDefault("tmpl-checkgroupview");
 	},
 	
 	checkBoxChanged : function(e) {
-		
 	}
 });
 
@@ -206,7 +203,7 @@ var CheckView = FormItemView.extend({
 	},
 	
 	render : function() {
-		//rendered by CheckGroupView
+		this.renderDefault("tmpl-checkview");
 	},
 	
 	getValue : function() {
@@ -227,6 +224,6 @@ var CheckView = FormItemView.extend({
 });
 
 
-window.formItemViewCodes = {text : TextView, number : NumberView, radio : RadioView, checkboxgroup : CheckGroupView};
+window.formItemViewCodes = {text : TextView, number : NumberView, radio : RadioView, checkboxgroup : CheckGroupView, checkbox : CheckView};
 
 

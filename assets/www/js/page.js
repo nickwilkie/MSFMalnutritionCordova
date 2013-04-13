@@ -1,42 +1,56 @@
 var PageView = Backbone.View.extend({
 	defaults : {
 		pageTheme : "c",
-		headerTheme : "c",
-		headerText : "NO TITLE",
-		contentTheme : "c",
-		footerTheme : "c",
-		headerOptions : {},
-		contentOptions : {},
-		footerOptions : {},
+		header : {},
+		content : {},
+		footer : {},
 		views : []
 	},
 	
+	tagName: "div",
+	
 	initialize : function() {
+		console.log("PageView initialized");
+		this.template = $("#tmpl-page").html();
 		this.options = _.defaults(this.options, this.defaults);
 		
 		this.viewModels = new FormItemViewModelList;
-		this.viewModels.add(this.options.views);
+		this.viewModels.add(this.options.content.views);
 	},
 	
 	render : function() {
-		var template = $("#tmpl-page").html();
-		this.$el.html(_.template(template, this.options, {variable : "data"}));
-
-		this.header = new Header(_.extend({el : this.$el.children(":jqmData(role='header')"), page : this}, this.options.headerOptions));
-		this.content = new Content(_.extend({el : this.$el.children(":jqmData(role='content')"), page : this}, this.options.contentOptions));
-		this.footer = new Footer(_.extend({el : this.$el.children(":jqmData(role='footer')"), page : this}, this.options.footerOptions));
+		this.$el.html(_.template(this.template, this.options, {variable : "data"}));
+		this.$el.attr('data-role', 'page').attr('data-theme', this.options.pageTheme);
 		
-		this.$el.attr('data-role', 'page').attr('data-theme', this.options.pageTheme).trigger('create').page();
+		this.header = new Header(_.extend({el : this.$el.children(":jqmData(role='header')"), page : this}, this.options.header));
+		this.content = new Content(_.extend({el : this.$el.children(":jqmData(role='content')"), page : this}, this.options.content));
+		this.footer = new Footer(_.extend({el : this.$el.children(":jqmData(role='footer')"), page : this}, this.options.footer));
+		
+		this.header.render();
+		this.content.render();
+		this.footer.render();
+		
+		this.$el.page();
 	}
 });
 
-
 var Header = Backbone.View.extend({
-	defaults : {},
+	defaults : {
+		theme : "d",
+		text : "NO TITLE"
+	},
 	
-	initialize : function(){
+	initialize : function() {
+		console.log("Header initialized");
+		this.template = $("#tmpl-header").html()
+		
 		this.options = _.defaults(this.options, this.defaults);
 		this.page = this.options.page;
+	},
+	
+	render : function() {
+		this.$el.attr('data-theme', this.options.theme);
+		this.$el.html(_.template(this.template, this.options, {variable : "data"}));
 	}
 });
 
@@ -45,21 +59,29 @@ var Content = Backbone.View.extend({
 	views : [],
 	
 	initialize : function() {
+		console.log("Content initialized");
+		
 		this.options = _.defaults(this.options, this.defaults);
-		this.page = this.options.page;
 		this.render();
 	},
 	
 	render : function() {
-		this.renderModels(this.$el, this.page.viewModels);
+		this.$el.attr('data-theme', this.options.theme);
+		
+		this.renderModels(this.$el, this.options.page.viewModels);
 	},
 	
 	renderModels : function(parentElement, modelList) {
+		modelList.each(function(model) {
+			model.generateView($("<div></div>").appendTo(parentElement));
+		});
 	}
 });
 
 var Footer = Backbone.View.extend({
 	defaults : {
+		theme : "c",
+		
 		footerIconPosition : "top",
 		
 		footerButton1Text : "Previous",
@@ -84,6 +106,8 @@ var Footer = Backbone.View.extend({
 	},
 	
 	initialize : function() {
+		console.log("Footer initialized");
+		
 		this.options = _.defaults(this.options, this.defaults);
 		this.page = this.options.page;
 		this.render();
@@ -98,6 +122,8 @@ var Footer = Backbone.View.extend({
 	},
 	
 	render : function() {
+		this.$el.attr('data-theme', this.options.theme);
+		
 		this.$el.html(_.template($("#tmpl-footer").html(), this.options, {variable : "data"}));
 		this.$el.children().navbar();
 		
@@ -120,16 +146,19 @@ var Footer = Backbone.View.extend({
 	},
 	
 	prev : function(e) {
-		FormApp.prevPage();
+		console.log('prev button pressed');
 	},
 	
 	help : function(e) {
+		console.log('help button pressed');
 	},
 	
 	next : function(e) {
-		FormApp.nextPage();
+		console.log('next button pressed');
 	},
 	
 	submit : function(e) {
+		console.log('submit button pressed');
 	}
 });
+
