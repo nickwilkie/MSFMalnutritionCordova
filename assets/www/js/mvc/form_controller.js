@@ -2,6 +2,11 @@ FormService = {
 	views : [],	
 	
 	viewValueChange : function(sourceView) {
+		var conceptId = sourceView.model.get('conceptId');
+		var value = sourceView.getValue();
+		console.log('FormService registered viewValueChange: ' + conceptId);
+		
+		ObsService.setObs(conceptId, value);
 	},
 	
 	registerView : function(view) {
@@ -28,11 +33,11 @@ ObsService = {
 	
 	setObs : function(conceptId, value) {
 		console.log('set obs ' + conceptId + ' to ' + value);
-		return obsList.setValue(conceptId, value);
+		return this.obsList.setValue(conceptId, value);
 	},
 
-	getObs : function(concept) {
+	getObs : function(conceptId) {
 		console.log('get obs ' + conceptId);
-		return obsList.getValue(conceptId);
+		return this.obsList.getValue(conceptId);
 	}
 };

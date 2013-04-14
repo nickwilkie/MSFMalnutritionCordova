@@ -1,8 +1,7 @@
 var Obs = Backbone.Model.extend({
 	defaults : {
 		conceptId : "",
-		required : false,
-		entered : false
+		value : undefined
 	},
 	
 	initialize : function(initValues, classParams) {

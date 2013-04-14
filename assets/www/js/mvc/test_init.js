@@ -1,15 +1,18 @@
 exampleTextField = {
 	viewType : "text",
+	conceptId : "fullName",
 	label : "What is your full name?"
 };
 
 exampleNumberField = {
 		viewType : "number",
+		conceptId : "numberOfBoats",
 		label : "How many boats do you own?"
 };
 
 exampleRadio = {
 		viewType : "radio",
+		conceptId : "favoriteColor",
 		label : "Which is your favorite color?",
 		options : [{label : "Green", value : "greenvalue"},
 		           {label : "Blue", value : "bluevalue"},
@@ -19,9 +22,9 @@ exampleRadio = {
 exampleCheckbox = {
 		viewType : "checkboxgroup",
 		label : "What sports do you like?",
-		children : [{label : "Soccer", value : "soccervalue"},
-		           {label : "Football", value : "footballvalue"},
-		           {label : "Calvinball", value : "calvinballvalue"}]
+		children : [{label : "Soccer", conceptId : "soccervalue"},
+		           {label : "Football", conceptId : "footballvalue"},
+		           {label : "Calvinball", conceptId : "calvinballvalue"}]
 };
 
 examplePage = {
@@ -30,28 +33,29 @@ examplePage = {
 		theme : "b"
 	},
 	footer : {
-		theme : "c"
+		theme : "b"
 	},
 	content : {
+		theme : "c",
 		views : [exampleTextField,
 		         exampleNumberField,
 		         exampleRadio,
 		         exampleCheckbox]
 	}
-}
+};
+
+exampleForm = {
+		
+};
 
 init = function() {
-	//defaultContent = $.mobile.activePage.children(":jqmData(role='content')");
-	//defaultContent.html("Loading...");
-	
-//	var createdPageEl = $("<div></div>").appendTo($("body"));
 	var createdPageView = new PageView(examplePage);
 	$("body").append(createdPageView.$el);
 	
 	createdPageView.render();
 	
 	$.mobile.changePage(createdPageView.$el);
-}
+};
 
 initialized = false;
 $(document).on('pageinit', function() {

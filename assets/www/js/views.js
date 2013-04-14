@@ -18,15 +18,6 @@ var FormItemViewModel = Backbone.Model.extend({
 	},
 	
 	initialize : function() {
-//		var obs = FormApp.obs.findObsFromConceptId(this.get('conceptId'));
-//		if (!obs) {
-//			obs = FormApp.obs.add({conceptId : this.get('conceptId'), value : this.get('defaultValue')});
-//			obs = FormApp.obs.findObsFromConceptId(this.get('conceptId'));
-//		}
-//		this.obs = obs;
-		
-//		this.listenTo(this.obs, 'change:value', this.obsChanged);
-		
 		var children = this.get('children');
 		if(children) {
 			this.childrenModels = new FormItemViewModelList;
@@ -101,8 +92,8 @@ var FormItemView = Backbone.View.extend({
 	},
 	
 	defaultValueChanged : function() {
-		alert('defaultValueChanged fired');
-		this.trigger('viewValueChange');
+		console.log('defaultValueChanged');
+		this.trigger('viewValueChange', this);
 	},
 	
 	render : function() {
@@ -117,8 +108,8 @@ var FormItemView = Backbone.View.extend({
 
 var TextView = FormItemView.extend({
 	events : {
-		"keyup input" : "valueChanged",
-		"change input" : "valueChanged"
+		"keyup input" : "defaultValueChanged",
+		"change input" : "defaultValueChanged"
 	},
 	
 	customPropertyDescriptors : {
@@ -141,7 +132,7 @@ var TextView = FormItemView.extend({
 
 var NumberView = TextView.extend({
 	events : {
-		"keyup input" : "valueChanged",
+		"keyup input" : "defaultValueChanged",
 		"keypress input" : "catchNumbers"
 	},
 	
@@ -160,14 +151,11 @@ var NumberView = TextView.extend({
 
 var RadioView = TextView.extend({
 	events : {
-		"change" : "radioValueChanged"
+		"change input" : "defaultValueChanged"
 	},
 	
 	render : function() {
 		this.renderDefault("tmpl-radioview");
-	},
-	
-	radioValueChanged : function(e) {
 	},
 	
 	getValue : function() {
@@ -188,28 +176,14 @@ var RadioView = TextView.extend({
 });
 
 var CheckGroupView = FormItemView.extend({
-	events : {
-		"change input" : "checkBoxChanged"
-	},
-	
-	render : function() {
-//		this.renderDefault("tmpl-checkgroupview", function($elBeforeCreate) {
-//			this.childrenModels.each(function(child, index, list) {
-//				var newElement = $("<input></input>").appendTo(this.$el);
-//				var newCheckBox = child.generateView(newElement);
-//			}, this);
-//		});
-		
+	render : function() {		
 		this.renderDefault("tmpl-checkgroupview", function() {
 			//generate checkboxes before creating
 			this.model.childrenModels.each(function(childModel, index, list) {
-				var newElement = $("<input></input>", {type : 'checkbox'}).appendTo(this.$el.find('fieldset'));
+				var newElement = $("<div></div>").appendTo(this.$el.find('fieldset'));
 				childModel.generateView(newElement, 'checkbox');
 			}, this);
 		});
-	},
-	
-	checkBoxChanged : function(e) {
 	}
 });
 
@@ -221,27 +195,23 @@ var CheckView = FormItemView.extend({
 	},
 	
 	render : function() {
-		this.$el.attr('value', this.model.get('value'));
-		$("<label></label>", {for : this.id}).
-			html(this.model.get('label')).
-			insertAfter(this.$el);
 		this.renderDefault("tmpl-checkview");
+		this.input = this.$el.find("input");
 	},
 	
 	getValue : function() {
-		var selected = this.$el.find(":checked");
-		if (selected.length > 0) {
-			return selected.val();
-		} else {
-			return "";
-		}
+		var selected = this.input.is(":checked");
+		return selected;
 	},
 	
 	setValue : function(value) {
-		var radiobuttons = this.$el.find("input");
-		var changedButton = radiobuttons.filter("[value='" + value + "']").attr('checked', true);
-		radiobuttons.not(changedButton).attr('checked', false);
-		radiobuttons.checkboxradio('refresh');
+		var checked;
+		if (value) {
+			checked = 'checked';
+		} else {
+			checked = '';
+		}
+		this.input.attr('checked', value).checkboxradio('refresh');
 	}
 });
 

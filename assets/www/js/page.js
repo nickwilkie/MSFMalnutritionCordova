@@ -1,6 +1,5 @@
 var PageView = Backbone.View.extend({
 	defaults : {
-		pageTheme : "c",
 		header : {},
 		content : {},
 		footer : {},
@@ -36,7 +35,7 @@ var PageView = Backbone.View.extend({
 
 var Header = Backbone.View.extend({
 	defaults : {
-		theme : "d",
+		theme : "b",
 		text : "NO TITLE"
 	},
 	
@@ -55,7 +54,9 @@ var Header = Backbone.View.extend({
 });
 
 var Content = Backbone.View.extend({
-	defaults : {},
+	defaults : {
+		theme : "b"
+	},
 	views : [],
 	
 	initialize : function() {
@@ -80,7 +81,7 @@ var Content = Backbone.View.extend({
 
 var Footer = Backbone.View.extend({
 	defaults : {
-		theme : "c",
+		theme : "b",
 		
 		footerIconPosition : "top",
 		
