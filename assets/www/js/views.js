@@ -45,13 +45,17 @@ var FormItemViewModel = Backbone.Model.extend({
 			viewType = this.get('viewType');
 		}
 		
-		this.view = new formItemViewCodes[viewType]({model : this, el : element});
+		this.view = new formItemViewCodes[viewType]({model : this,
+			el : element});
 		this.view.render();
+		
+		FormService.registerView(this.view);
 	},
 	
 	destroyView : function() {
 		this.view.stopListening();
 		this.view.$el.html("");
+		FormService.unregisterView(this.view);
 		this.view = undefined;
 	},
 	
@@ -74,9 +78,12 @@ var FormItemView = Backbone.View.extend({
 		this.model = options.model;
 		
 		//generate a unique ID if not specified already
-		var id = this.model.get('id');
+		var id = options.id;
 		if (!id) {
-			id = _.uniqueId(this.model.get('viewType') + "-");
+			id = this.model.get('id');
+			if (!id) {
+				id = _.uniqueId(this.model.get('viewType') + "-");
+			}
 		}
 		this.id = id;
 	},
@@ -91,6 +98,11 @@ var FormItemView = Backbone.View.extend({
 	},
 	
 	valueChanged : function(view) {
+	},
+	
+	defaultValueChanged : function() {
+		alert('defaultValueChanged fired');
+		this.trigger('viewValueChange');
 	},
 	
 	render : function() {
@@ -177,7 +189,7 @@ var RadioView = TextView.extend({
 
 var CheckGroupView = FormItemView.extend({
 	events : {
-		"input change" : "checkBoxChanged"
+		"change input" : "checkBoxChanged"
 	},
 	
 	render : function() {
@@ -188,7 +200,13 @@ var CheckGroupView = FormItemView.extend({
 //			}, this);
 //		});
 		
-		this.renderDefault("tmpl-checkgroupview");
+		this.renderDefault("tmpl-checkgroupview", function() {
+			//generate checkboxes before creating
+			this.model.childrenModels.each(function(childModel, index, list) {
+				var newElement = $("<input></input>", {type : 'checkbox'}).appendTo(this.$el.find('fieldset'));
+				childModel.generateView(newElement, 'checkbox');
+			}, this);
+		});
 	},
 	
 	checkBoxChanged : function(e) {
@@ -199,10 +217,14 @@ var CheckView = FormItemView.extend({
 	template : _.template($("#tmpl-checkview").html()),
 	
 	events : {
-		"input change" : "valueChanged"
+		"change input" : "defaultValueChanged"
 	},
 	
 	render : function() {
+		this.$el.attr('value', this.model.get('value'));
+		$("<label></label>", {for : this.id}).
+			html(this.model.get('label')).
+			insertAfter(this.$el);
 		this.renderDefault("tmpl-checkview");
 	},
 	
