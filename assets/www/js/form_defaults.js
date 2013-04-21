@@ -1,19 +1,20 @@
-DefaultsService = {
-	defaults : new DefaultList;
-	
-	registerDefaults : function(path, defaults) {
-	},
-	
-	getDefaults : function(componentName, options) {
-	}
-};
-
 Default = Backbone.Model.extend({
 });
 
 DefaultList = Backbone.Collection.extend({
 	model : Default
 });
+
+DefaultsService = {
+		defaults : new DefaultList,
+		
+		registerDefaults : function(path, defaults) {
+		},
+		
+		getDefaults : function(componentName, options) {
+		}
+	};
+
 
 {
 	globalDefaults = {
@@ -32,7 +33,7 @@ DefaultList = Backbone.Collection.extend({
 			
 	};
 	
-	DefaultsService.registerDefaults('global', GlobalDefaults);
+	DefaultsService.registerDefaults('global', globalDefaults);
 }
 
 BlankForm = {

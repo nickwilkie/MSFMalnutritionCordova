@@ -42,7 +42,7 @@
 
 
 <script id='tmpl-header' type='text/template'>
-	<h1><%= data.text%></h1>
+	<h1><%= data.title %></h1>
 </script>
 
 <script id='tmpl-footer' type='text/template'>
@@ -131,6 +131,31 @@ var inputId = data.view.id + '-input';
 </script>
 
 <script id='tmpl-dateview' type='text/template'>
+</script>
+
+<script id='tmpl-submitpage' type='text/template'>
+	<div class="ui-body ui-body-e" style="text-align:center;">
+		<h2>Please review your entries</h2>
+	</div>
+	<ul data-role="listview" data-inset="true" data-divider-theme="d">
+		<%
+			for (var i = 0; i < PageService.pageModels.length; i++) {
+				var pageModel = PageService.pageModels.at(i);
+				var page = pageModel.pageView;
+		%>
+				<li data-role="list-divider">Page <%= i + 1 %>: <%= pageModel.get('header').get('title') %></li>
+BUT NOT ALL OF YOUR VIEWS ARE IN THE LIST... WHAT ABOUT GODDAMN CHECKBOXES???
+				<% var viewModels = pageModel.get('content').get('views');
+				for (var j = 0; j < viewModels.length; j++) { 
+						var viewModel = viewModels.at(j);
+						var conceptId = viewModel.get('conceptId');
+						if (conceptId) {
+						%>
+							<li><a href="#"><h2><%= ObsService.getObs(conceptId) %></h2><p><strong><%= conceptId %></strong></p></a></li>
+						<% } %>
+					<% } %>
+				<% } %>
+	</ul>
 </script>
 
 

@@ -1,87 +1,35 @@
-var PageView = Backbone.View.extend({
-	defaults : {
-		header : {},
-		content : {},
-		footer : {},
-		views : []
+BodyView = Backbone.View.extend({
+	events : {
+		'pagebeforeshow' : 'pagebeforeshow'
 	},
 	
-	tagName: "div",
-	
-	initialize : function() {
-		console.log("PageView initialized");
-		this.template = $("#tmpl-page").html();
-		this.options = _.defaults(this.options, this.defaults);
-		
-		this.viewModels = new FormItemViewModelList;
-		this.viewModels.add(this.options.content.views);
-	},
-	
-	render : function() {
-		this.$el.html(_.template(this.template, this.options, {variable : "data"}));
-		this.$el.attr('data-role', 'page').attr('data-theme', this.options.pageTheme);
-		
-		this.header = new Header(_.extend({el : this.$el.children(":jqmData(role='header')"), page : this}, this.options.header));
-		this.content = new Content(_.extend({el : this.$el.children(":jqmData(role='content')"), page : this}, this.options.content));
-		this.footer = new Footer(_.extend({el : this.$el.children(":jqmData(role='footer')"), page : this}, this.options.footer));
-		
-		this.header.render();
-		this.content.render();
-		this.footer.render();
-		
-		this.$el.page();
+	pagebeforeshow : function(event) {
+		var page = PageService.getPageFromElement(event.target);
+		if (page) {
+			page.beforeShow();
+		}
 	}
 });
 
-var Header = Backbone.View.extend({
-	defaults : {
-		theme : "b",
-		text : "NO TITLE"
-	},
-	
-	initialize : function() {
-		console.log("Header initialized");
-		this.template = $("#tmpl-header").html()
-		
-		this.options = _.defaults(this.options, this.defaults);
-		this.page = this.options.page;
-	},
-	
-	render : function() {
-		this.$el.attr('data-theme', this.options.theme);
-		this.$el.html(_.template(this.template, this.options, {variable : "data"}));
-	}
-});
-
-var Content = Backbone.View.extend({
+HeaderModel = Backbone.Model.extend({
 	defaults : {
 		theme : "b"
-	},
-	views : [],
-	
-	initialize : function() {
-		console.log("Content initialized");
-		
-		this.options = _.defaults(this.options, this.defaults);
-		this.render();
-	},
-	
-	render : function() {
-		this.$el.attr('data-theme', this.options.theme);
-		
-		this.renderModels(this.$el, this.options.page.viewModels);
-	},
-	
-	renderModels : function(parentElement, modelList) {
-		modelList.each(function(model) {
-			model.generateView($("<div></div>").appendTo(parentElement));
-		});
 	}
 });
 
-var Footer = Backbone.View.extend({
+ContentModel = Backbone.Model.extend({
 	defaults : {
-		theme : "b",
+		theme : "c"
+	},
+	
+	initialize : function(initValues, classParams) {
+		this.set('views', new FormItemViewModelList(initValues.views));
+	}
+});
+
+FooterModel = Backbone.Model.extend({
+	defaults : {
+		theme : "c",
 		
 		footerIconPosition : "top",
 		
@@ -104,13 +52,102 @@ var Footer = Backbone.View.extend({
 		footerButton3Icon : "arrow-r",
 		footerButton3Action : "next",
 		footerButton3Disabled : false
+	}
+});
+
+PageModel = Backbone.Model.extend({
+	defaults : {
+		theme : "c",
+		header : {},
+		content : {},
+		footer : {}
+	},
+	
+	initialize : function(initValues, classParams) {
+		this.set('header', new HeaderModel(initValues.header));
+		this.set('content', new ContentModel(initValues.content));
+		this.set('footer', new FooterModel(initValues.footer));
+	},
+	
+	generatePageView : function() {
+		var element = $("<div></div>").appendTo($("body"));
+		this.pageView = new PageView({model : this, el : element});
+	}
+});
+
+PageView = Backbone.View.extend({
+	tagName: "div",
+	
+	events : {
 	},
 	
 	initialize : function() {
-		console.log("Footer initialized");
+		console.log("PageView initializing");
+		this.model = this.options.model;
 		
-		this.options = _.defaults(this.options, this.defaults);
-		this.page = this.options.page;
+		this.template = $("#tmpl-page").html();
+		this.render();
+	},
+	
+	render : function() {
+		this.$el.html(_.template(this.template, {}, {variable : "data"}));
+		this.$el.attr('data-role', 'page').attr('data-theme', this.model.get('theme'));
+		
+		this.header = new Header({el : this.$el.children(":jqmData(role='header')"), page : this, model : this.model.get('header')});
+		this.content = new Content({el : this.$el.children(":jqmData(role='content')"), page : this, model : this.model.get('content')});
+		this.footer = new Footer({el : this.$el.children(":jqmData(role='footer')"), page : this, model : this.model.get('footer')});
+		
+		this.header.render();
+		this.content.render();
+		this.footer.render();
+		
+		this.$el.page();
+	},
+	
+	beforeShow : function() {
+		this.footer.render();
+		this.footer.$el.trigger('create');
+	}
+});
+
+var Header = Backbone.View.extend({
+	initialize : function() {
+		console.log("Header initializing");
+		this.model = this.options.model;
+	},
+	
+	render : function() {
+		this.$el.attr('data-theme', this.model.get('theme'));
+		this.$el.html(_.template($("#tmpl-header").html(), this.model.toJSON(), {variable : "data"}));
+	}
+});
+
+Content = Backbone.View.extend({
+	initialize : function() {
+		console.log("Content initializing");
+		this.model = this.options.model;
+		this.viewModels = new FormItemViewModelList([this.model.get('views')]);
+		
+		this.render();
+	},
+	
+	render : function() {
+		this.$el.attr('data-theme', this.model.get('theme'));
+		this.renderModels(this.$el, this.model.get('views'));
+	},
+	
+	renderModels : function(parentElement, modelList) {
+		modelList.each(function(model) {
+			model.generateView($("<div></div>").appendTo(parentElement));
+		});
+	}
+});
+
+Footer = Backbone.View.extend({
+	initialize : function() {
+		console.log("Footer initializing");
+		this.model = this.options.model;
+		
 		this.render();
 	},
 	
@@ -123,43 +160,65 @@ var Footer = Backbone.View.extend({
 	},
 	
 	render : function() {
-		this.$el.attr('data-theme', this.options.theme);
+		this.$el.attr('data-theme', this.model.get('theme'));
 		
-		this.$el.html(_.template($("#tmpl-footer").html(), this.options, {variable : "data"}));
+		this.$el.html(_.template($("#tmpl-footer").html(), this.model.toJSON(), {variable : "data"}));
 		this.$el.children().navbar();
 		
-		if (this.options.footerButton1Disabled) {
+		if (this.model.get('footerButton1Disabled')) {
 			this.disableButton($(this.$el.find("li > a")[0]));
 		}
 		
-		if (this.options.footerButton2Disabled) {
+		if (this.model.get('footerButton2Disabled')) {
 			this.disableButton($(this.$el.find("li > a")[1]));
 		}
 		
-		if (this.options.footerButton3Disabled) {
+		if (this.model.get('footerButton3Disabled')) {
 			this.disableButton($(this.$el.find("li > a")[2]));
+		}
+		
+		//Disable prev if first page
+		if (PageService.getActivePageIndex() == 0) {
+			this.disableButton($(this.$el.find("li > a[action='prev']")));
 		}
 	},
 	
 	disableButton : function(button) {
 		button.addClass('ui-disabled');
-		button.removeAttr('action');
+	},
+	
+	enableButton : function(button) {
+		button.removeClass('ui-disabled');
+	},
+	
+	isEnabled : function() {
+		return !this.$el.is(".ui-disabled");
 	},
 	
 	prev : function(e) {
 		console.log('prev button pressed');
+		if(this.isEnabled()) {
+			PageService.prevPage();
+		}
 	},
 	
 	help : function(e) {
 		console.log('help button pressed');
+		if(this.isEnabled()) {
+		}
 	},
 	
 	next : function(e) {
 		console.log('next button pressed');
+		if(this.isEnabled()) {
+			PageService.nextPage();
+		}
 	},
 	
 	submit : function(e) {
 		console.log('submit button pressed');
+		if(this.isEnabled()) {
+		}
 	}
 });
 

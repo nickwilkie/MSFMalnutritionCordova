@@ -215,7 +215,14 @@ var CheckView = FormItemView.extend({
 	}
 });
 
+var SubmitPageView = FormItemView.extend({
+	render : function() {
+		this.$el.attr('id', this.id).attr('formview', this.model.get('viewType'));
+		this.$el.html(_.template($("#tmpl-submitpage").html(), {model : this.model, view : this}, {variable : "data"}));
+	}
+});
 
-window.formItemViewCodes = {text : TextView, number : NumberView, radio : RadioView, checkboxgroup : CheckGroupView, checkbox : CheckView};
+
+window.formItemViewCodes = {text : TextView, number : NumberView, radio : RadioView, checkboxgroup : CheckGroupView, checkbox : CheckView, submitpage : SubmitPageView};
 
 
