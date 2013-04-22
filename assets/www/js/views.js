@@ -187,7 +187,7 @@ var CheckGroupView = FormItemView.extend({
 	}
 });
 
-var CheckView = FormItemView.extend({
+var CheckView = FormItemView.extend({ 
 	template : _.template($("#tmpl-checkview").html()),
 	
 	events : {

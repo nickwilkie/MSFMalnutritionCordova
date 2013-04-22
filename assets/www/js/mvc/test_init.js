@@ -35,6 +35,20 @@ exampleCheckbox2 = {
 		           {label : "Nickel", conceptId : "nickelallergy"}]
 };
 
+introPage = {
+	header : {
+		title : "MSF Malnutrition",
+		theme : "b"
+	},
+	footer : {
+		theme : "c"
+	},
+	content : {
+		theme : "c",
+		views : []
+	}
+};
+
 examplePage1 = {
 	header : {
 		title : "Working Test Config",
@@ -84,9 +98,10 @@ exampleForm = {
 	global : {
 	},
 	
-	pages : [SubmitPage,
+	pages : [introPage, 
 	         examplePage1,
-	         examplePage2]
+	         examplePage2,
+	         SubmitPage]
 };
 
 init = function() {
