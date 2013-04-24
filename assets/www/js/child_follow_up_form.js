@@ -1,3 +1,9 @@
+/*
+ * These define all the questions that you'll see on a particular page.
+ * It's a JSON array. I've given it its own variable to highlight it. The
+ * childPage1Views variable gets used later on for the final structure.
+*/
+
 childPage1Views = [
 	{viewType : "date", conceptId : "datenq", label : "Date du suivi"}, 
 	{viewType : "text", conceptId : "nomenq", label : "Num\xE9ro de l'enqu\xEAteur"}, 
@@ -34,6 +40,68 @@ childPage1Views = [
     		       	{viewType : "text", conceptId : "accompprecise", label : "Pr\xE9ciser:"}
 ];
 
+
+introPage = {
+	header : {
+		title : "MSF Malnutrition",
+		theme : "b"
+	},
+	footer : {
+		theme : "c"
+	},
+	content : {
+		theme : "c",
+		views : []
+	}
+};
+
+/*
+ * This represents a page. It uses the array we defined above to describe which views
+ * should be on the page. This also contains some display data like the title, themes, etc.
+ */
+
+childPage1 = {
+	header : {
+		title : "Working Test Config",
+		theme : "b"
+	},
+	footer : {
+		theme : "c"
+	},
+	content : {
+		theme : "c",
+		views : childPage1Views
+	}
+};
+
+SubmitPage = {
+		header : {
+			title : "Submit form data",
+			theme : "b"
+		},
+		footer : {
+			theme : "c"
+		},
+		content : {
+			theme : "c",
+			views : [{viewType : "submitpage"}]
+		}
+};
+
+/*
+ * formData is the global variable that the initializer uses to actually fill the form.
+ * It can define global variables and defaults for the whole app. Right now it just has two pages.
+ * 
+ */
+
+formData = {
+	global : {
+	},
+	
+	pages : [childPage1,
+	         SubmitPage]
+};
+
 exampleTextField = {
 	viewType : "text",
 	conceptId : "fullName",
@@ -69,54 +137,4 @@ exampleCheckbox2 = {
 		children : [{label : "Sulfa", conceptId : "sulfaallergy"},
 		           {label : "Wheat", conceptId : "wheatallergy"},
 		           {label : "Nickel", conceptId : "nickelallergy"}]
-};
-
-introPage = {
-	header : {
-		title : "MSF Malnutrition",
-		theme : "b"
-	},
-	footer : {
-		theme : "c"
-	},
-	content : {
-		theme : "c",
-		views : []
-	}
-};
-
-childPage1 = {
-	header : {
-		title : "Working Test Config",
-		theme : "b"
-	},
-	footer : {
-		theme : "c"
-	},
-	content : {
-		theme : "c",
-		views : childPage1Views
-	}
-};
-
-SubmitPage = {
-		header : {
-			title : "Submit form data",
-			theme : "b"
-		},
-		footer : {
-			theme : "c"
-		},
-		content : {
-			theme : "c",
-			views : [{viewType : "submitpage"}]
-		}
-};
-
-formData = {
-	global : {
-	},
-	
-	pages : [childPage1,
-	         SubmitPage]
 };
