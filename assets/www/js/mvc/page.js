@@ -127,8 +127,6 @@ Content = Backbone.View.extend({
 		console.log("Content initializing");
 		this.model = this.options.model;
 		this.viewModels = new FormItemViewModelList([this.model.get('views')]);
-		
-		this.render();
 	},
 	
 	render : function() {

@@ -136,21 +136,27 @@ var inputId = data.view.id + '_input';
 	<ul data-role="listview" data-inset="true" data-divider-theme="d">
 		<%
 			for (var i = 0; i < PageService.pageModels.length; i++) {
-				var pageModel = PageService.pageModels.at(i);
-				var page = pageModel.pageView;
+				var pageModel = PageService.pageModels.at(i).attributes;
 		%>
-				<li data-role="list-divider">Page <%= i + 1 %>: <%= pageModel.get('header').get('title') %></li>
-BUT NOT ALL OF YOUR VIEWS ARE IN THE LIST... WHAT ABOUT GODDAMN CHECKBOXES???
-				<% var viewModels = pageModel.get('content').get('views');
-				for (var j = 0; j < viewModels.length; j++) { 
-						var viewModel = viewModels.at(j);
-						var conceptId = viewModel.get('conceptId');
-						if (conceptId) {
-						%>
-							<li><a href="#"><h2><%= ObsService.getObs(conceptId) %></h2><p><strong><%= conceptId %></strong></p></a></li>
+				<li data-role="list-divider">Page <%= i + 1 %>: <%= pageModel.header.get('title') %></li>
+				<% var addFields;
+				addFields = function(viewModels) {
+					for (var j = 0; j < viewModels.length; j++) { 
+							var viewModel = viewModels[j];
+							var conceptId = viewModel.conceptId;
+							var children = viewModel.children;
+							if (conceptId) {
+							%>
+								<li><a href="#"><h2><%= ObsService.getObs(conceptId) %></h2><p><strong><%= conceptId %></strong></p></a></li>
+							<% }
+							if (children) {
+								addFields(children);
+							} %>
 						<% } %>
 					<% } %>
-				<% } %>
+				<% addFields(pageModel.content.toJSON().views.toJSON()); %>
+			<% } %>
+				
 	</ul>
 </script>
 

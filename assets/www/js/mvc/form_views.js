@@ -44,9 +44,8 @@ var FormItemViewModel = Backbone.Model.extend({
 	},
 	
 	destroyView : function() {
-		this.view.stopListening();
-		this.view.$el.html("");
 		FormService.unregisterView(this.view);
+		this.view.remove();
 		this.view = undefined;
 	},
 	
