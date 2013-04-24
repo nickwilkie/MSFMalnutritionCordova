@@ -22,3 +22,11 @@ ul.errorlist {
 	height: 100% !important;
 	position:relative !important;
 }
+
+.numberview div.ui-input-text {
+	max-width: 7em;
+}
+
+.dateview div.ui-input-text {
+	max-width: 10em;
+}

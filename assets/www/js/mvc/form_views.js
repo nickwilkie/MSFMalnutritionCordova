@@ -132,6 +132,7 @@ var TextView = FormItemView.extend({
 
 var NumberView = TextView.extend({
 	events : {
+		"change input" : "defaultValueChanged",
 		"keyup input" : "defaultValueChanged",
 		"keypress input" : "catchNumbers"
 	},
@@ -215,6 +216,13 @@ var CheckView = FormItemView.extend({
 	}
 });
 
+var DateView = TextView.extend({
+	render : function() {
+		this.renderDefault("tmpl-dateview");
+		this.$el.find('input').mobiscroll().date();
+	}
+});
+
 var SubmitPageView = FormItemView.extend({
 	render : function() {
 		this.$el.attr('id', this.id).attr('formview', this.model.get('viewType'));
@@ -223,6 +231,12 @@ var SubmitPageView = FormItemView.extend({
 });
 
 
-window.formItemViewCodes = {text : TextView, number : NumberView, radio : RadioView, checkboxgroup : CheckGroupView, checkbox : CheckView, submitpage : SubmitPageView};
+window.formItemViewCodes = {text : TextView,
+		number : NumberView,
+		radio : RadioView,
+		checkboxgroup : CheckGroupView,
+		checkbox : CheckView,
+		submitpage : SubmitPageView,
+		date : DateView};
 
 
